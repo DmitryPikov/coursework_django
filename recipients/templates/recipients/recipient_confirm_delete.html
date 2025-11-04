@@ -1,0 +1,45 @@
+{% extends 'users/main.html' %}
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-exclamation-triangle"></i> Подтверждение удаления
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <h5>Вы уверены, что хотите удалить клиента?</h5>
+
+                    <div class="alert alert-warning">
+                        <strong>{{ object.full_name }}</strong>
+                        {% if object.email %}
+                        <br>Email: {{ object.email }}
+                        {% endif %}
+                        {% if object.phone %}
+                        <br>Телефон: {{ object.phone }}
+                        {% endif %}
+                    </div>
+
+                    <p class="text-muted">
+                        <small>Это действие нельзя отменить. Все данные клиента будут безвозвратно удалены.</small>
+                    </p>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Да, удалить
+                            </button>
+                            <a href="{% url 'recipients:recipients_list' %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Отмена
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'users/main.html' %}
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Сообщения</h2>
+        <a href="{% url 'messaging:message_form' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Добавить сообщение
+        </a>
+    </div>
+
+    <div class="row">
+        {% for message in object_list %}
+        <div class="col-md-6 col-lg-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ message.topic_message }}</h5>
+                    {% if message.topic_message %}
+                    <p class="card-text">
+                        <small class="text-muted">
+                            <i class="fas fa-envelope"></i> {{ message.text_message|truncatechars:100 }}
+                        </small>
+                    </p>
+                    {% endif %}
+                    {% if message.text_message %}
+                    <p class="card-text">
+                        <small class="text-muted">
+                            <i class="fas fa-phone"></i> {{ user.phone }}
+                        </small>
+                    </p>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-transparent">
+                    <div class="btn-group w-100" role="group">
+                        <a href="{% url 'messaging:message_edit' message.pk %}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-edit"></i> Редактировать
+                        </a>
+                        <a href="{% url 'messaging:message_delete' message.pk %}" class="btn btn-outline-danger btn-sm">
+                            <i class="fas fa-trash"></i> Удалить
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="text-center text-muted py-5">
+                <i class="fas fa-users fa-3x mb-3"></i>
+                <p>Пока нет сообщений</p>
+                <a href="{% url 'messaging:message_form' %}" class="btn btn-primary">
+                    Добавить первое сообщение
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends 'users/main.html' %}
+{% block content %}
+<div class="container">
+    <div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Всего попыток</th>
+                <th>Успешных</th>
+                <th>Неудачных</th>
+                <th>Успешность</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for mailing in object_list %}
+            <tr>
+                <td>{{ mailing.stats.total|default:0 }}</td>
+                <td>{{ mailing.stats.successful|default:0 }}</td>
+                <td>{{ mailing.stats.failed|default:0 }}</td>
+                <td>{{ mailing.stats.success|default:0 }}%</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Рассылки</h2>
+        <a href="{% url 'mailing:mailing_form' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i>Добавить рассылку
+        </a>
+    </div>
+    <div class="row">
+        {% for mailing in object_list %}
+        <div class="col-md-6 col-lg-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ mailing.id }}</h5>
+                    {% if mailing.start_time %}
+                    <p class="card-text">
+                        <small class="text-muted">
+                            <i class="fas fa-envelope"></i> {{ mailing.start_time|truncatechars:100 }}
+                        </small>
+                    </p>
+                    {% endif %}
+                    {% if mailing.end_time %}
+                    <p class="card-text">
+                        <small class="text-muted">
+                            <i class="fas fa-envelope"></i> {{ mailing.end_time|truncatechars:100 }}
+                        </small>
+                    </p>
+                    {% endif %}
+                    {% if mailing.status %}
+                    <p class="card-text">
+                        <small class="text-muted">
+                            <i class="fas fa-envelope"></i> {{ mailing.status }}
+                        </small>
+                    </p>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-transparent">
+                    <!-- Кнопка "Отправить сейчас" на всю ширину -->
+                    <form method="post" action="{% url 'mailing:start_mailing' mailing.id %}" class="w-100 mb-2">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-primary btn-sm w-100">
+                            Отправить сейчас
+                        </button>
+                    </form>
+
+                    <!-- Остальные кнопки в группе -->
+                    <div class="btn-group w-100" role="group">
+                        <a href="{% url 'mailing:mailing_edit' mailing.pk %}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-edit"></i> Редактировать
+                        </a>
+                        <a href="{% url 'mailing:mailing_delete' mailing.pk %}" class="btn btn-outline-danger btn-sm">
+                            <i class="fas fa-trash"></i> Удалить
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="text-center text-muted py-5">
+                <i class="fas fa-users fa-3x mb-3"></i>
+                <p>Пока нет рассылок</p>
+                <a href="{% url 'mailing:mailing_form' %}" class="btn btn-primary">
+                    Добавить первую рассылку
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
