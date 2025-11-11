@@ -1,0 +1,13 @@
+{% extends 'users/main.html' %}
+
+{% block content %}
+<h2>Мой профиль</h2>
+
+<div>
+    <p><strong>Email:</strong> {{ user_profile.email }}</p>
+    <p><strong>Имя:</strong> {{ user_profile.first_name }}</p>
+    <p><strong>Фамилия:</strong> {{ user_profile.last_name }}</p>
+</div>
+
+<a href="{% url 'users:profile_edit' %}">Редактировать профиль</a>
+{% endblock %}

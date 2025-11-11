@@ -1,0 +1,38 @@
+{% extends 'users/main.html' %}
+
+{% block content %}
+<h1>Статистика рассылок</h1>
+<div class="stats">
+    <div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Всего попыток</th>
+                <th>Успешных</th>
+                <th>Неудачных</th>
+                <th>Успешность</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for mailing in object_list %}
+            <tr>
+                <td>{{ mailing.stats.total|default:0 }}</td>
+                <td>{{ mailing.stats.successful|default:0 }}</td>
+                <td>{{ mailing.stats.failed|default:0 }}</td>
+                <td>{{ mailing.stats.success|default:0 }}%</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="stat-item">
+        <h3>Всего рассылок - {{ total_mailings }}</h3>
+    </div>
+    <div class="stat-item">
+        <h3>Активных рассылок - {{ active_mailings }}</h3>
+    </div>
+    <div class="stat-item">
+        <h3>Уникальных получателей - {{ unique_clients }}</h3>
+    </div>
+</div>
+{% endblock %}

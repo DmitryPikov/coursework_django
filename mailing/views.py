@@ -1,24 +1,18 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from mailing.models import Mailing
 from mailing.services import send_mailing
 from messaging.models import Message
-from permissions import (
-    ManagerRequiredMixin,
-    OwnerEditPermissionMixin,
-    OwnerQuerysetMixin,
-)
+from permissions import (ManagerRequiredMixin, OwnerEditPermissionMixin,
+                         OwnerQuerysetMixin)
 from recipients.models import Recipient
 from users.models import User
 
 
-@method_decorator(cache_page(60 * 15), name="dispatch")
 class MailingListView(LoginRequiredMixin, OwnerQuerysetMixin, ListView):
     model = Mailing
     template_name = "mailing/mailings_list.html"
@@ -43,7 +37,6 @@ class MailingListView(LoginRequiredMixin, OwnerQuerysetMixin, ListView):
         return queryset
 
 
-@method_decorator(cache_page(60 * 15), name="dispatch")
 class MailingCreateView(LoginRequiredMixin, CreateView):
     model = Mailing
     fields = ["start_time", "end_time", "message", "recipients"]
@@ -68,7 +61,6 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
         return form
 
 
-@method_decorator(cache_page(60 * 15), name="dispatch")
 class MailingUpdateView(
     LoginRequiredMixin,
     OwnerEditPermissionMixin,
@@ -94,7 +86,6 @@ class MailingUpdateView(
         return form
 
 
-@method_decorator(cache_page(60 * 15), name="dispatch")
 class MailingDeleteView(
     LoginRequiredMixin,
     OwnerEditPermissionMixin,
@@ -106,7 +97,6 @@ class MailingDeleteView(
     success_url = reverse_lazy("mailing:mailings_list")
 
 
-@method_decorator(cache_page(60 * 15), name="dispatch")
 class ManagerUserListView(LoginRequiredMixin, ManagerRequiredMixin, ListView):
     model = User
     template_name = "mailing/manager_users_list.html"
@@ -117,7 +107,6 @@ class ManagerUserListView(LoginRequiredMixin, ManagerRequiredMixin, ListView):
         return User.objects.all().order_by("-date_joined")
 
 
-@method_decorator(cache_page(60 * 15), name="dispatch")
 class ManagerMailingListView(LoginRequiredMixin, ManagerRequiredMixin, ListView):
     model = Mailing
     template_name = "mailing/manager_mailings_list.html"
@@ -125,7 +114,6 @@ class ManagerMailingListView(LoginRequiredMixin, ManagerRequiredMixin, ListView)
     paginate_by = 20
 
 
-@method_decorator(cache_page(60 * 15), name="dispatch")
 class ManagerRecipientListView(LoginRequiredMixin, ManagerRequiredMixin, ListView):
     model = Recipient
     template_name = "mailing/manager_recipients_list.html"
@@ -163,31 +151,6 @@ def toggle_mailing_status(request, mailing_id):
 
     messages.success(request, f"Рассылка #{mailing.id} {action}")
     return redirect("mailing:manager_mailings")
-
-
-def index(request):
-    user = request.user
-
-    if user.is_authenticated and hasattr(user, "role") and user.role == "manager":
-        total_mailings = Mailing.objects.count()
-        active_mailings = Mailing.objects.filter(status="running").count()
-        unique_clients = Recipient.objects.distinct().count()
-    elif user.is_authenticated:
-        total_mailings = Mailing.objects.filter(owner=user).count()
-        active_mailings = Mailing.objects.filter(owner=user, status="running").count()
-        unique_clients = Recipient.objects.filter(owner=user).distinct().count()
-    else:
-        total_mailings = 0
-        active_mailings = 0
-        unique_clients = 0
-
-    context = {
-        "total_mailings": total_mailings,
-        "active_mailings": active_mailings,
-        "unique_clients": unique_clients,
-    }
-
-    return render(request, "users/main.html", context)
 
 
 def start_mailing(request, mailing_id):

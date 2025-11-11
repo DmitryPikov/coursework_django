@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 
 from .models import User
 
@@ -42,4 +42,17 @@ class UserRegisterForm(StyleFormMixin, UserCreationForm):
             "email": "Электронная почта",
             "password1": "Пароль",
             "password2": "Подтверждение пароля",
+        }
+
+
+class UserProfileForm(UserChangeForm):
+    password = None
+
+    class Meta:
+        model = User
+        fields = ["email", "first_name", "last_name"]  # Добавьте нужные поля
+        widgets = {
+            "email": forms.EmailInput(attrs={"class": "form-control"}),
+            "first_name": forms.TextInput(attrs={"class": "form-control"}),
+            "last_name": forms.TextInput(attrs={"class": "form-control"}),
         }

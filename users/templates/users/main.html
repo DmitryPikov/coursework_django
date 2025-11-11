@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -8,18 +7,7 @@
 <body>
 {% include 'users/includes/menu.html' %}
 {% block content %}
-<h1>Статистика рассылок</h1>
-<div class="stats">
-    <div class="stat-item">
-        <h3>Всего рассылок - {{ total_mailings }}</h3>
-    </div>
-    <div class="stat-item">
-        <h3>Активных рассылок - {{ active_mailings }}</h3>
-    </div>
-    <div class="stat-item">
-        <h3>Уникальных получателей - {{ unique_clients }}</h3>
-    </div>
-</div>
+<h5>Сервис управления рассылками</h5>
 {% endblock %}
 </body>
 </html>

@@ -17,12 +17,11 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import include, path
-
-from mailing.views import index
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", index, name="main"),
+    path("", TemplateView.as_view(template_name="users/main.html"), name="main"),
     path("", include("recipients.urls", namespace="recipients")),
     path("", include("messaging.urls", namespace="messaging")),
     path("", include("mailing.urls", namespace="mailing")),

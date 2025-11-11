@@ -3,7 +3,8 @@ from django.contrib.auth.views import LoginView
 from django.urls import path, reverse_lazy
 
 from users.apps import UsersConfig
-from users.views import UserCreateView, custom_logout
+from users.views import (UserCreateView, UserMailingStatisticsView,
+                         UserProfileUpdateView, UserProfileView, custom_logout)
 
 app_name = UsersConfig.name
 
@@ -42,4 +43,7 @@ urlpatterns = [
         ),
         name="password_reset_complete",
     ),
+    path("profile/", UserProfileView.as_view(), name="profile"),
+    path("profile/edit/", UserProfileUpdateView.as_view(), name="profile_edit"),
+    path("profile/statistics/", UserMailingStatisticsView.as_view(), name="statistics"),
 ]
